@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.SlashCommands;
 using System.Reflection;
 
 namespace sdb_app;
@@ -41,6 +42,7 @@ class Program
             };
             // Creating a new discord client with config
             var discordClient = new DiscordClient(discordConfig);
+            var slashCommands = discordClient.UseSlashCommands();
             // creating a CommandsNext Configuration and pass it into our client
             var cmdsConfig = new CommandsNextConfiguration()
             {

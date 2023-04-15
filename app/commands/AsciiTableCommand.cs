@@ -2,7 +2,7 @@ using System;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using System.Threading.Tasks;
-
+namespace sdb_app.commands;
 public class AsciiTableCommandModule : BaseCommandModule {
 
     private void generateTable(ref string result, byte min=32, byte max=255){

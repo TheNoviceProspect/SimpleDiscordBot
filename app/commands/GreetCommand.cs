@@ -3,6 +3,8 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using System.Threading.Tasks;
 
+namespace sdb_app.commands;
+
 public class GreetCommandModule : BaseCommandModule {
     [Command("greet")]
     public async Task GreetCommand(CommandContext ctx, [RemainingText] string name) {
