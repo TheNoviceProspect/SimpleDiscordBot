@@ -1,0 +1,4 @@
+**/bin/
+**/obj/
+tmp/
+discord_token.secret
