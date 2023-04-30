@@ -1,6 +1,6 @@
 # Simple Discord Bot
 
-Created in C# with the help if (DSharpPlus)[https://dsharpplus.github.io/DSharpPlus/index.html].
+Created in C# with the help if [DSharpPlus](https://dsharpplus.github.io/DSharpPlus/index.html).
 
 ## Available Commands
 
