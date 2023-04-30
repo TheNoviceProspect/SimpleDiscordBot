@@ -52,6 +52,7 @@ class Program
             var commands = discordClient.UseCommandsNext(cmdsConfig);
             var slashCommands = discordClient.UseSlashCommands();
             slashCommands.RegisterCommands<BothelpCommandModule>();
+            slashCommands.RegisterCommands<WeatherCommandModule>();
             slashCommands.RegisterCommands<PromoteCommandModule>();
             
             commands.RegisterCommands(Assembly.GetExecutingAssembly());
