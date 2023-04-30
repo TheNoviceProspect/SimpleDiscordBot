@@ -5,15 +5,17 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.SlashCommands;
 using System.Reflection;
+using sdb_app.slashCommands;
 
 namespace sdb_app;
 class Program
 {
+    
     /// <summary>
     /// This denotes the file with a plaintext discord token for your bot
     /// </summary>
     //static string TokenFile = "discord_token.secret";
-    static string TokenFile = "/home/smzb/workspace/discord_token.secret";
+    static string TokenFile = "discord_token.secret";
     /// <summary>
     /// Token Validator
     /// </summary>
@@ -42,13 +44,15 @@ class Program
             };
             // Creating a new discord client with config
             var discordClient = new DiscordClient(discordConfig);
-            var slashCommands = discordClient.UseSlashCommands();
             // creating a CommandsNext Configuration and pass it into our client
             var cmdsConfig = new CommandsNextConfiguration()
             {
                 StringPrefixes = new[] { "!" }
             };
             var commands = discordClient.UseCommandsNext(cmdsConfig);
+            var slashCommands = discordClient.UseSlashCommands();
+            slashCommands.RegisterCommands<BothelpCommandModule>();
+            slashCommands.RegisterCommands<PromoteCommandModule>();
             
             commands.RegisterCommands(Assembly.GetExecutingAssembly());
             // try to connect
