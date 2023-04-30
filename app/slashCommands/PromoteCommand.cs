@@ -43,7 +43,7 @@ public class PromoteCommandModule : ApplicationCommandModule {
     }
     
     [SlashCommand("promote", "makes the member a group of the indicated role.")]
-    public async Task Promote(InteractionContext ctx, [Option("user", "User to promote")] DiscordUser user, DiscordRole role)
+    public async Task Promote(InteractionContext ctx, [Option("user", "User to promote")] DiscordUser user, [Option("role", "Role to promote the user to..")]  DiscordRole role)
     {
         await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent($"Promoted {user.Username} to role {role.Name}"));
     }
