@@ -52,8 +52,8 @@ class Program
             var commands = discordClient.UseCommandsNext(cmdsConfig);
             var slashCommands = discordClient.UseSlashCommands();
             slashCommands.RegisterCommands<BothelpCommandModule>();
-            slashCommands.RegisterCommands<WeatherCommandModule>();
             slashCommands.RegisterCommands<PromoteCommandModule>();
+            slashCommands.RegisterCommands<WeatherCommandModule>();
             
             commands.RegisterCommands(Assembly.GetExecutingAssembly());
             // try to connect

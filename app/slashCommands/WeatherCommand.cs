@@ -6,10 +6,10 @@ namespace sdb_app.slashCommands;
 public class WeatherCommandModule : ApplicationCommandModule {
     private const string NEWLINE = "\n";    
     
-    [SlashCommand("weather", "Give me your location and I will give you your weather!")]
+    [SlashCommand("weather", "Give me your location and I will give you your Weather!")]
     public async Task WeatherCommand(InteractionContext ctx, [Option("location","which location to retrieve weather for.")] string _location) {
         string content = "";
-        content = $"Grabbing the weather for {_location}";
+        content = $"Grabbing the Weather for {_location}";
         await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(content));
         content += NEWLINE;
         content += "Waiting for response from external service ...";
