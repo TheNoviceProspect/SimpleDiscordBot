@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "fudge.auto-using",
+        "adrianwilczynski.namespace",
+        "k--kato.docomment",
+        "oderwat.indent-rainbow",
+        "aliasadidev.nugetpackagemanagergui",
+        "rubymaniac.vscode-paste-and-indent"
+    ]
+}
