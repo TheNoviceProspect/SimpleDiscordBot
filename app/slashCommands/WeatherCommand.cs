@@ -2,6 +2,8 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using System.Threading.Tasks;
+using sdb_app.services;
+
 namespace sdb_app.slashCommands;
 public class WeatherCommandModule : ApplicationCommandModule {
     private const string NEWLINE = "\n";    
@@ -16,6 +18,14 @@ public class WeatherCommandModule : ApplicationCommandModule {
         await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(content));
         await Task.Delay(1500);
         // Do the work here
+        
+        // Get the weather for the location.
+        WeatherData weather = await WeatherService.GetWeather(_location);
+
+        // Display the weather information.
+        content += "The current temperature in " + _location + " is " + weather.Temperature + NEWLINE;
+        content += "The current humidity in " + _location + " is " + weather.Humidity + NEWLINE;
+        content += "The current wind speed in " + _location + " is " + weather.WindSpeed + NEWLINE;
         content += NEWLINE;
         content += "Thanks for waiting!";
         content += "The weather is what it is";
