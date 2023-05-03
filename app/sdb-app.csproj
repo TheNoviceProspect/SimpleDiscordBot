@@ -12,8 +12,9 @@
     <PackageReference Include="DSharpPlus.CommandsNext" Version="4.4.0" />
     <PackageReference Include="DSharpPlus.SlashCommands" Version="4.4.0" />
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <None Update="../discord_token.secret" CopyToOutputDirectory="PreserveNewest" />
+  <ItemGroup>
+    <None Include="../discord_token.secret" CopyToOutputDirectory="Always" />
+    <None Include="../weather_token.secret" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
 
