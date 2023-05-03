@@ -2,3 +2,4 @@
 **/obj/
 tmp/
 *.secret
+.vs/
