@@ -59,23 +59,27 @@ public class WeatherService {
         // Build the query string depending on wether the endpoint supports countries or not.
         if (MyEndpoint.CountryQueryString=="")
         {
-            _queryString = MyEndpoint.CityQueryString + _city + "&" + MyEndpoint.AppID + apiKey;
+            _queryString = $"{MyEndpoint.Endpoint}{MyEndpoint.CityQueryString}{_city}&{MyEndpoint.AppID}{apiKey}";
         } else
         {
-            _queryString = MyEndpoint.CityQueryString + _city + "&" + MyEndpoint.CountryQueryString + _country + "&" + MyEndpoint.AppID + apiKey;
+            _queryString = $"{MyEndpoint.Endpoint}{MyEndpoint.CityQueryString}{_city}&{MyEndpoint.CountryQueryString}{_country}&{MyEndpoint.AppID}{apiKey}";
         }
 
-        Console.WriteLine($"This is the full query: {MyEndpoint.Endpoint}{_queryString}");
+        Program.discordClient.Logger.Log(LogLevel.Debug, $"This is the full query: {_queryString}", new object());
 
         // Create a new HttpClient object.
         HttpClient client = new HttpClient();
 
         // Set the Content-Type header to application/x-www-form-urlencoded.
-        client.DefaultRequestHeaders.Add("Content-Type", "application/x-www-form-urlencoded");
+        //client.DefaultRequestHeaders.Add("Content-Type", "application/x-www-form-urlencoded");
+        client.DefaultRequestHeaders.Add("Content-Type", "application/json");
 
         // Make the request to the Weather Underground API.
-        HttpResponseMessage response = await client.GetAsync(MyEndpoint.Endpoint + _queryString);
+        //HttpResponseMessage response = await client.GetAsync(MyEndpoint.Endpoint + _queryString);
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _queryString);
 
+        // Send the request
+        HttpResponseMessage response = await client.SendAsync(request);
 
         // Check the response status code.
         if (response.StatusCode == HttpStatusCode.OK)
@@ -84,7 +88,7 @@ public class WeatherService {
             string rawWeatherData = await response.Content.ReadAsStringAsync();
 
             // Parse the weather data into a Weather object.
-            WeatherData weather = JsonConvert.DeserializeObject<WeatherData>(rawWeatherData);
+            WeatherData? weather = JsonConvert.DeserializeObject<WeatherData>(rawWeatherData);
 
             return weather;
         }
@@ -94,4 +98,5 @@ public class WeatherService {
             throw new Exception("Error: " + response.StatusCode);
         }
     }
+
 }

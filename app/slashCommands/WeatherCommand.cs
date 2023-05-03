@@ -19,7 +19,7 @@ public class WeatherCommandModule : ApplicationCommandModule {
         // Get the weather for the location.
         WeatherService service = new WeatherService();
         service.MyEndpoint = service.WeatherEndpoints.Find(x => x.Name.Equals("WeatherBit"));
-        content += "Querying " + service.MyEndpoint.Endpoint;
+        content += "Querying " + service.MyEndpoint.Endpoint + service.MyEndpoint.CityQueryString + _city + "&" + service.MyEndpoint.CountryQueryString + _country + "&" + service.MyEndpoint.AppID + "*REDACTED*" + NEWLINE;
         await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(content));
         WeatherData weather = await service.GetWeather(_city,_country);
         // Display the weather information.
