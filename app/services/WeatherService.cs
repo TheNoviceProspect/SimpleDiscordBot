@@ -7,6 +7,10 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace sdb_app.services;
+
+/// <summary>
+/// This is a container for Weather Data
+/// </summary>
 public class WeatherData
     {
         public string? Temperature { get; set; }
@@ -14,16 +18,45 @@ public class WeatherData
         public string? WindSpeed { get; set; }
     }
 
+/// <summary>
+/// The Weather Service class
+/// </summary>
 public class WeatherService {
 
+    /// <summary>
+    /// Describe how a weather endpoint functions
+    /// </summary>
     public struct WeatherEndpoint
     {
+        /// <summary>
+        /// The endpoint name
+        /// </summary>
         public string Name;
+        /// <summary>
+        /// The full url to the endpoint without any query parameters
+        /// </summary>
         public string Endpoint;
+        /// <summary>
+        /// How to query a location/city
+        /// </summary>
         public string CityQueryString;
+        /// <summary>
+        /// How to query a country
+        /// </summary>
         public string CountryQueryString;
+        /// <summary>
+        /// How to pass my app secret?
+        /// </summary>
         public string AppID;
 
+        /// <summary>
+        /// WeatherEndpoint constructor simply assign its parameters to an object of type WeatherEndpoint
+        /// </summary>
+        /// <param name="_name">The endpoint name</param>
+        /// <param name="_endpoint">The full url to the endpoint without any query parameters</param>
+        /// <param name="_cityquerystring">How to query a location/city</param>
+        /// <param name="_countryquerystring">How to query a country</param>
+        /// <param name="_appId">How to pass my app secret?</param>
         public WeatherEndpoint(string _name, string _endpoint, string _cityquerystring, string _countryquerystring, string _appId)
         {
             Name = _name;
@@ -34,8 +67,16 @@ public class WeatherService {
         }
     }
 
+    /// <summary>
+    /// A list of WeatherEndpoints
+    /// </summary>
+    /// <typeparam name="WeatherEndpoint">A struct on how to talk to a weather endpoint</typeparam>
+    /// <returns>an empty list of endpoints before population</returns>
     public List<WeatherEndpoint> WeatherEndpoints = new List<WeatherEndpoint>();
 
+    /// <summary>
+    /// Let's construct our WeatherEndpoints with known values for 3 different providers.
+    /// </summary>
     public WeatherService()
     {
         WeatherEndpoints.Add(new WeatherEndpoint("WeatherUnderground", "https://api.wunderground.com/api/", "q=", "", "appid="));
@@ -50,13 +91,12 @@ public class WeatherService {
     /// </summary>
     /// <param name="_city">Any city name should do, if none is given London, UK is assumed</param>
     /// <returns>an asynchronous result containing <see>WeatherData</see></returns>
-    public async Task<WeatherData> GetWeather(string _city = "London", string _country = "UK") {
+    public async Task<String> GetWeather(string _city = "London", string _country = "UK") {
         // Get the API key from Weather Underground.
         string apiKey = sdb_app.Program.WeatherToken;
 
-        string _queryString = String.Empty;
-
         // Build the query string depending on wether the endpoint supports countries or not.
+        string _queryString = String.Empty;
         if (MyEndpoint.CountryQueryString=="")
         {
             _queryString = $"{MyEndpoint.Endpoint}{MyEndpoint.CityQueryString}{_city}&{MyEndpoint.AppID}{apiKey}";
@@ -65,6 +105,7 @@ public class WeatherService {
             _queryString = $"{MyEndpoint.Endpoint}{MyEndpoint.CityQueryString}{_city}&{MyEndpoint.CountryQueryString}{_country}&{MyEndpoint.AppID}{apiKey}";
         }
 
+        // Log the entire query
         Program.discordClient.Logger.Log(LogLevel.Debug, $"This is the full query: {_queryString}", new object());
 
         // Create a new HttpClient object.
@@ -74,8 +115,10 @@ public class WeatherService {
         //client.DefaultRequestHeaders.Add("Content-Type", "application/x-www-form-urlencoded");
         client.DefaultRequestHeaders.Add("Content-Type", "application/json");
 
-        // Make the request to the Weather Underground API.
+        // Make the request to the Weather API.
         //HttpResponseMessage response = await client.GetAsync(MyEndpoint.Endpoint + _queryString);
+        
+        // Create the request before sending it to the server.
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _queryString);
 
         // Send the request
@@ -88,9 +131,10 @@ public class WeatherService {
             string rawWeatherData = await response.Content.ReadAsStringAsync();
 
             // Parse the weather data into a Weather object.
-            WeatherData? weather = JsonConvert.DeserializeObject<WeatherData>(rawWeatherData);
+            // TODO(smzb): this needs addressed since the json response is more "layered"
+            //WeatherData? weather = JsonConvert.DeserializeObject<WeatherData>(rawWeatherData);
 
-            return weather;
+            return rawWeatherData;
         }
         else
         {
