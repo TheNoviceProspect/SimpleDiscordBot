@@ -79,7 +79,7 @@ public class WeatherService {
     /// </summary>
     public WeatherService()
     {
-        WeatherEndpoints.Add(new WeatherEndpoint("WeatherUnderground", "https://api.wunderground.com/api/", "q=", "", "appid="));
+        WeatherEndpoints.Add(new WeatherEndpoint("WeatherUnderground", "https://api.wunderground.c4om/api/", "q=", "", "appid="));
         WeatherEndpoints.Add(new WeatherEndpoint("OpenWeatherMap", "https://api.openweathermap.org/data/2.5/weather?", "q=", "", "appid="));
         WeatherEndpoints.Add(new WeatherEndpoint("WeatherBit", "https://api.weatherbit.io/v2.0/current?", "city=", "country=", "key="));
     }
@@ -97,16 +97,35 @@ public class WeatherService {
 
         // Build the query string depending on wether the endpoint supports countries or not.
         string _queryString = String.Empty;
+        string _debugQueryString = String.Empty;
         if (MyEndpoint.CountryQueryString=="")
         {
             _queryString = $"{MyEndpoint.Endpoint}{MyEndpoint.CityQueryString}{_city}&{MyEndpoint.AppID}{apiKey}";
+            // make sure there is key when we say "redacted" or "empty" when it is
+            if (apiKey==String.Empty)
+            {
+                _debugQueryString = $"{MyEndpoint.Endpoint}{MyEndpoint.CityQueryString}{_city}&{MyEndpoint.AppID}[EMPTY]";
+            } else
+            {
+                _debugQueryString = $"{MyEndpoint.Endpoint}{MyEndpoint.CityQueryString}{_city}&{MyEndpoint.AppID}[REDACTED]";
+            }
+        
         } else
         {
             _queryString = $"{MyEndpoint.Endpoint}{MyEndpoint.CityQueryString}{_city}&{MyEndpoint.CountryQueryString}{_country}&{MyEndpoint.AppID}{apiKey}";
+            // make sure there is key when we say "redacted" or "empty" when it is
+            if (apiKey == String.Empty)
+            {
+                _debugQueryString = $"{MyEndpoint.Endpoint}{MyEndpoint.CityQueryString}{_city}&{MyEndpoint.CountryQueryString}{_country}&{MyEndpoint.AppID}[EMPTY]";
+            }
+            else
+            {
+                _debugQueryString = $"{MyEndpoint.Endpoint}{MyEndpoint.CityQueryString}{_city}&{MyEndpoint.CountryQueryString}{_country}&{MyEndpoint.AppID}[REDACTED]";
+            }
         }
 
         // Log the entire query
-        Program.discordClient.Logger.Log(LogLevel.Debug, $"This is the full query: {_queryString}", new object());
+        Program.discordClient.Logger.Log(LogLevel.Information, $"This is the full query: {_debugQueryString}", MyEndpoint);
 
         // Create a new HttpClient object.
         HttpClient client = new HttpClient();
@@ -121,6 +140,8 @@ public class WeatherService {
         // Create the request before sending it to the server.
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _queryString);
 
+        Program.discordClient.Logger.Log(LogLevel.Information, $"This is the api request: {request.ToString}", MyEndpoint);
+
         // Send the request
         HttpResponseMessage response = await client.SendAsync(request);
 
@@ -129,6 +150,7 @@ public class WeatherService {
         {
             // Get the weather data from the response body.
             string rawWeatherData = await response.Content.ReadAsStringAsync();
+            sdb_app.Program.discordClient.Logger.Log(LogLevel.Information,"We have received a response as follows", rawWeatherData);
 
             // Parse the weather data into a Weather object.
             // TODO(smzb): this needs addressed since the json response is more "layered"

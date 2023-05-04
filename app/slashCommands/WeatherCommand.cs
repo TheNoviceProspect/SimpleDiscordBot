@@ -3,6 +3,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using System.Threading.Tasks;
 using sdb_app.services;
+using Microsoft.Extensions.Logging;
 
 namespace sdb_app.slashCommands;
 public class WeatherCommandModule : ApplicationCommandModule {
@@ -10,6 +11,7 @@ public class WeatherCommandModule : ApplicationCommandModule {
     
     [SlashCommand("weather", "Give me your location and I will give you your Weather!")]
     public async Task WeatherCommand(InteractionContext ctx, [Option("city","which city to retrieve weather for.")] string _city, [Option("country","Which country does this city belong to.")] string _country) {
+        sdb_app.Program.discordClient.Logger.Log(LogLevel.Information, $"'/weather {_city} {_country}' command has been issued...", ctx);
         string content = $"Grabbing the Weather for {_city} in {_country}"+NEWLINE;
         await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(content));
         content += "Waiting for response from external service ..."+NEWLINE;

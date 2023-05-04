@@ -45,7 +45,7 @@ class Program
                 Token = tokenResult,
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents,
-                MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.Debug
+                MinimumLogLevel = Microsoft.Extensions.Logging.LogLevel.Information
             };
             // Creating a new discord client with config
             discordClient = new DiscordClient(discordConfig);

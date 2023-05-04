@@ -1,6 +1,7 @@
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 namespace sdb_app.slashCommands;
 public class BothelpCommandModule : ApplicationCommandModule {
@@ -8,6 +9,7 @@ public class BothelpCommandModule : ApplicationCommandModule {
     
     [SlashCommand("bothelp", "This should return a help text of sorts.")]
     public async Task BothelpCommand(InteractionContext ctx) {
+        sdb_app.Program.discordClient.Logger.Log(LogLevel.Information, "'/bothelp' command has been issued...", ctx);
         string content = "";
         content = "Starting some arduous task!";
         await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(content));

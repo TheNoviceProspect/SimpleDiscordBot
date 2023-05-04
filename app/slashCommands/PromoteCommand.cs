@@ -4,6 +4,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace sdb_app.slashCommands;
 
@@ -45,12 +46,14 @@ public class PromoteCommandModule : ApplicationCommandModule {
     [SlashCommand("promote", "makes the member a group of the indicated role.")]
     public async Task Promote(InteractionContext ctx, [Option("user", "User to promote")] DiscordUser user, [Option("role", "Role to promote the user to..")]  DiscordRole role)
     {
+        sdb_app.Program.discordClient.Logger.Log(LogLevel.Information, $"'/promote {user} {role}' command has been issued...", ctx);
         await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent($"Promoted {user.Username} to role {role.Name}"));
     }
 
     [SlashCommand("list-roles", "print a list of roles")]
     public async Task ListRoles(InteractionContext ctx)
     {
+        sdb_app.Program.discordClient.Logger.Log(LogLevel.Information, "'/list-roles' command has been issued...", ctx);
         EnumerateRoles(ref ctx);
         await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent($"All Roles : {NEWLINE}{ReturnRoles()}"));
     }
