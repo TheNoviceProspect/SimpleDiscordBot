@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -125,18 +126,27 @@ public class WeatherService {
         }
 
         // Log the entire query
-        Program.discordClient.Logger.Log(LogLevel.Information, $"This is the full query: {_debugQueryString}", MyEndpoint);
+        if (sdb_app.Program.IsDebug)
+        {
+            Program.discordClient.Logger.Log(LogLevel.Information, $"This is the full query: {_debugQueryString}", MyEndpoint);
+        }
 
         // Create a new HttpClient object.
         HttpClient client = new HttpClient();
 
-        Program.discordClient.Logger.Log(LogLevel.Information, $"This is the HTTP client: {client.ToString}", client);
+        if (sdb_app.Program.IsDebug)
+        {
+            Program.discordClient.Logger.Log(LogLevel.Information, $"This is the HTTP client: {client.ToString}", client);
+        }
 
         // Set the Content-Type header to application/x-www-form-urlencoded.
         //client.DefaultRequestHeaders.Add("Content-Type", "application/x-www-form-urlencoded");
         client.DefaultRequestHeaders.Add("Content-Type", "application/json");
 
-        Program.discordClient.Logger.Log(LogLevel.Information, $"Headers were changed to : {client.DefaultRequestHeaders.ToString}", client);
+        if (sdb_app.Program.IsDebug)
+        {
+            Program.discordClient.Logger.Log(LogLevel.Information, $"Headers were changed to : {client.DefaultRequestHeaders.ToString}", client);
+        }
 
         // Make the request to the Weather API.
         //HttpResponseMessage response = await client.GetAsync(MyEndpoint.Endpoint + _queryString);
@@ -144,7 +154,10 @@ public class WeatherService {
         // Create the request before sending it to the server.
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, _queryString);
 
-        Program.discordClient.Logger.Log(LogLevel.Information, $"This is the api request: {request.ToString}", MyEndpoint);
+        if (sdb_app.Program.IsDebug)
+        {
+            Program.discordClient.Logger.Log(LogLevel.Information, $"This is the api request: {request.ToString}", MyEndpoint);
+        }
 
         // Send the request
         HttpResponseMessage response = await client.SendAsync(request);
@@ -154,7 +167,10 @@ public class WeatherService {
         {
             // Get the weather data from the response body.
             string rawWeatherData = await response.Content.ReadAsStringAsync();
-            sdb_app.Program.discordClient.Logger.Log(LogLevel.Information,"We have received a response as follows", rawWeatherData);
+            if (sdb_app.Program.IsDebug)
+            {
+                sdb_app.Program.discordClient.Logger.Log(LogLevel.Information, "We have received a response as follows", rawWeatherData);
+            }
 
             // Parse the weather data into a Weather object.
             // TODO(smzb): this needs addressed since the json response is more "layered"

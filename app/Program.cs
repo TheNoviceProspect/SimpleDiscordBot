@@ -6,6 +6,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.SlashCommands;
 using System.Reflection;
 using sdb_app.slashCommands;
+using Microsoft.Extensions.Logging;
 
 namespace sdb_app;
 class Program
@@ -30,6 +31,13 @@ class Program
     private static string _weatherToken = String.Empty;
     internal static string WeatherToken { get; } = GetToken(WeatherTokenFile);
     internal static DiscordClient? discordClient { get; set; }
+
+    private static AssemblyConfigurationAttribute? assemblyConfigurationAttribute = typeof(Program).Assembly.GetCustomAttribute<AssemblyConfigurationAttribute>();
+    private static string? buildConfigurationName = assemblyConfigurationAttribute?.Configuration;
+
+    private static bool isDebug = (buildConfigurationName=="Debug") ? true : false;
+    internal static bool IsDebug { get { return isDebug; } set { isDebug = value; } }
+
 
     static async Task Main(string[] args)
     {
@@ -62,6 +70,10 @@ class Program
             slashCommands.RegisterCommands<WeatherCommandModule>();
             
             commands.RegisterCommands(Assembly.GetExecutingAssembly());
+            if (IsDebug)
+            {
+                discordClient.Logger.Log(LogLevel.Information, $" This app was build using the '{buildConfigurationName}' configuration..", assemblyConfigurationAttribute);
+            }
             // try to connect
             await discordClient.ConnectAsync();
             // and wait infinitly
