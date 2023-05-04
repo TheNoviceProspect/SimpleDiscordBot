@@ -130,9 +130,13 @@ public class WeatherService {
         // Create a new HttpClient object.
         HttpClient client = new HttpClient();
 
+        Program.discordClient.Logger.Log(LogLevel.Information, $"This is the HTTP client: {client.ToString}", client);
+
         // Set the Content-Type header to application/x-www-form-urlencoded.
         //client.DefaultRequestHeaders.Add("Content-Type", "application/x-www-form-urlencoded");
         client.DefaultRequestHeaders.Add("Content-Type", "application/json");
+
+        Program.discordClient.Logger.Log(LogLevel.Information, $"Headers were changed to : {client.DefaultRequestHeaders.ToString}", client);
 
         // Make the request to the Weather API.
         //HttpResponseMessage response = await client.GetAsync(MyEndpoint.Endpoint + _queryString);
