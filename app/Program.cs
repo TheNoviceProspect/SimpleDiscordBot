@@ -35,8 +35,7 @@ class Program
     private static AssemblyConfigurationAttribute? assemblyConfigurationAttribute = typeof(Program).Assembly.GetCustomAttribute<AssemblyConfigurationAttribute>();
     private static string? buildConfigurationName = assemblyConfigurationAttribute?.Configuration;
 
-    private static bool isDebug = (buildConfigurationName=="Debug") ? true : false;
-    internal static bool IsDebug { get { return isDebug; } set { isDebug = value; } }
+    internal static bool IsDebug { get; } = (buildConfigurationName == "Debug") ? true : false;
 
 
     static async Task Main(string[] args)
@@ -72,7 +71,7 @@ class Program
             commands.RegisterCommands(Assembly.GetExecutingAssembly());
             if (IsDebug)
             {
-                discordClient.Logger.Log(LogLevel.Information, $" This app was build using the '{buildConfigurationName}' configuration..", assemblyConfigurationAttribute);
+                discordClient.Logger.Log(LogLevel.Information, $"This app was build using the '{buildConfigurationName}' configuration..", assemblyConfigurationAttribute);
             }
             // try to connect
             await discordClient.ConnectAsync();

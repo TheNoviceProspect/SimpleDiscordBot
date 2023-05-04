@@ -136,7 +136,7 @@ public class WeatherService {
 
         if (sdb_app.Program.IsDebug)
         {
-            Program.discordClient.Logger.Log(LogLevel.Information, $"This is the HTTP client: {client.ToString}", client);
+            Program.discordClient.Logger.Log(LogLevel.Information, $"This is the HTTP client: {client.DefaultRequestHeaders}", client);
         }
 
         // Set the Content-Type header to application/x-www-form-urlencoded.
