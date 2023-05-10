@@ -11,25 +11,19 @@ using Microsoft.Extensions.Logging;
 namespace sdb_app;
 class Program
 {
-    
-    /// <summary>
-    /// This denotes the file with a plaintext discord token for your bot
-    /// </summary>
-    //static string TokenFile = "discord_token.secret";
-    static string DiscordTokenFile = "discord_token.secret";
-    static string WeatherTokenFile = "weather_token.secret";
-    /// <summary>
-    /// Token Validator
+        /// <summary>
+    /// Token File Parser
     /// </summary>
     /// <returns>Either a token-string or string.Empty when failed.</returns>
     static string GetToken(string _tokenFile) {
-        if (File.Exists(_tokenFile)) {
-            var token = File.ReadAllText(_tokenFile);
-            return token;
+        string properName = _tokenFile + "_token.secret";
+        if (File.Exists(properName)) {
+            var token = File.ReadAllText(properName);
+            return token.TrimEnd('\n');
         } else return string.Empty;
     }
     private static string _weatherToken = String.Empty;
-    internal static string WeatherToken { get; } = GetToken(WeatherTokenFile);
+    internal static string WeatherToken { get; } = GetToken("weather");
     internal static DiscordClient? discordClient { get; set; }
 
     private static AssemblyConfigurationAttribute? assemblyConfigurationAttribute = typeof(Program).Assembly.GetCustomAttribute<AssemblyConfigurationAttribute>();
@@ -40,7 +34,7 @@ class Program
 
     static async Task Main(string[] args)
     {
-        var tokenResult = GetToken(DiscordTokenFile);
+        var tokenResult = GetToken("discord");
         // check wether the token was empty and exit the app with a failure if so
         if (tokenResult == String.Empty) {
             Console.WriteLine("There is no token present!");
