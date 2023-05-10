@@ -83,7 +83,7 @@ public class WeatherService {
     /// </summary>
     /// <param name="_city">Any city name should do, if none is given London, UK is assumed</param>
     /// <returns>an asynchronous result containing <see>WeatherData</see></returns>
-    public async Task<WeatherData> GetWeather(WeatherService.WeatherEndpoint _endpoint, string _city = "London", string _country = "UK") {
+    public async Task<WeatherData> GetWeather(string _city = "London", string _country = "UK") {
         // Get the API key from Weather Underground.
         string apiKey = sdb_app.Program.WeatherToken;
 
@@ -93,12 +93,24 @@ public class WeatherService {
         // Create a new HttpClient object.
         HttpClient client = new HttpClient();
 
+        void createQuery()
+        {
+            if (MyEndpoint.CountryQueryString == "")
+            {
+                _queryString = $"{MyEndpoint.Endpoint}{MyEndpoint.CityQueryString}{_city}&{MyEndpoint.AppID}{apiKey}";
+            }
+            else
+            {
+                _queryString = $"{MyEndpoint.Endpoint}{MyEndpoint.CityQueryString}{_city}&{MyEndpoint.CountryQueryString}{_country}&{MyEndpoint.AppID}{apiKey}";
+            }
+        }
+        createQuery();
         // Create the request before sending it to the server.
         Uri request = new Uri(_queryString);
-
+        // Debug output of the request
         if (sdb_app.Program.IsDebug)
         {
-            Program.discordClient.Logger.Log(LogLevel.Information, $"This is the api request: {request.ToString}", _endpoint);
+            Program.discordClient.Logger.Log(LogLevel.Information, $"This is the api request: {request.ToString}", MyEndpoint);
         }
 
         // Send the request

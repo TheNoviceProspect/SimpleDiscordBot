@@ -22,7 +22,7 @@ public class WeatherCommandModule : ApplicationCommandModule {
         // set its endpoint to that of weatherbit.io
         service.MyEndpoint = service.WeatherEndpoints.Find(x => x.Name.Equals("WeatherBit"));
         // Get the weather for the location through our specific endpoint
-        WeatherData weather = await service.GetWeather(service.MyEndpoint, _city,_country);
+        WeatherData weather = await service.GetWeather(_city,_country);
         // Simplify data access
         var data = weather.data[0];
         // Display the weather information.
