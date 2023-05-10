@@ -4,6 +4,7 @@ using DSharpPlus.SlashCommands;
 using System.Threading.Tasks;
 using sdb_app.services;
 using Microsoft.Extensions.Logging;
+using sdb_app.services.data;
 
 namespace sdb_app.slashCommands;
 public class WeatherCommandModule : ApplicationCommandModule {
@@ -20,17 +21,13 @@ public class WeatherCommandModule : ApplicationCommandModule {
         WeatherService service = new WeatherService();
         // set its endpoint to that of weatherbit.io
         service.MyEndpoint = service.WeatherEndpoints.Find(x => x.Name.Equals("WeatherBit"));
-        // Now output the full query
-        content += "Querying " + service.MyEndpoint.Endpoint + service.MyEndpoint.CityQueryString + _city + "&" + service.MyEndpoint.CountryQueryString + _country + "&" + service.MyEndpoint.AppID + "*REDACTED*" + NEWLINE;
-        await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(content));
-        // Get the weather for the location.
-        //WeatherData weather = await service.GetWeather(_city,_country);
-        string weather = await service.GetWeather(_city,_country);
+        // Get the weather for the location through our specific endpoint
+        WeatherData weather = await service.GetWeather(service.MyEndpoint, _city,_country);
+        // Simplify data access
+        var data = weather.data[0];
         // Display the weather information.
-        // content += "The current temperature in " + _city + " is " + weather.Temperature + NEWLINE;
-        // content += "The current humidity in " + _city + " is " + weather.Humidity + NEWLINE;
-        // content += "The current wind speed in " + _city + " is " + weather.WindSpeed + NEWLINE;
-        content += "This is the raw response : " + NEWLINE + "`"+weather+"`"+NEWLINE;
+        content += "The current temperature in " + data.city_name + "," + data.country_code + " is " + data.temp + "°C" + NEWLINE;
+        content += "The current humidity is " + data.rh + "% and the current wind speed is " + data.wind_spd + "m/s hailing from " + data.wind_cdir_full + NEWLINE;
         content += "~~~" + NEWLINE;
         content += "Thanks for waiting!";
         await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(content));
